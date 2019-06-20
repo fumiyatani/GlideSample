@@ -12,13 +12,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var gifDrawable: GifDrawable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         GlideApp.with(this)
-            .load(R.raw.test)
-            .listener(object : RequestListener<Drawable> {
+            .load(R.raw.test) // Gif読み込み
+            .listener(object : RequestListener<Drawable> { // リスナーを登録してあげる
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -36,11 +38,15 @@ class MainActivity : AppCompatActivity() {
                     dataSource: DataSource?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    val gifResource = resource as GifDrawable
-                    gifResource.setLoopCount(1)
+                    gifDrawable = resource as GifDrawable
+                    gifDrawable.setLoopCount(1)
                     return false
                 }
             })
             .into(gifImage)
+
+        animateButton.setOnClickListener {
+            gifDrawable.start()
+        }
     }
 }
